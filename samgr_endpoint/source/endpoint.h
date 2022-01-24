@@ -32,6 +32,13 @@ extern "C" {
 #define SAMGR_COOKIE 0
 #define MAX_DATA_LEN 0x100
 #define MIN_DATA_LEN 0x40
+#ifndef MAX_SYSCAP_NUM
+#define MAX_SYSCAP_NUM 512
+#endif
+
+#ifndef MAX_SYSCAP_NAME_LEN
+#define MAX_SYSCAP_NAME_LEN 64
+#endif
 
 typedef enum ResourceID {
     RES_ENDPOINT,
@@ -64,6 +71,10 @@ struct Endpoint {
 Endpoint *SAMGR_CreateEndpoint(const char *name, RegisterEndpoint registry);
 int SAMGR_AddRouter(Endpoint *endpoint, const SaName *saName, const Identity *id, IUnknown *proxy);
 int SAMGR_ProcPolicy(const Endpoint *endpoint, const SaName *saName, int token);
+int32 SAMGR_AddSysCap(const Endpoint *endpoint, const char *sysCap, BOOL isReg);
+int32 SAMGR_GetSysCap(const Endpoint *endpoint, const char *sysCap, BOOL *isReg);
+int32 SAMGR_GetSystemCapabilities(const Endpoint *endpoint,
+    char sysCaps[MAX_SYSCAP_NUM][MAX_SYSCAP_NAME_LEN], int32 *sysCapNum);
 
 #ifdef __cplusplus
 #if __cplusplus

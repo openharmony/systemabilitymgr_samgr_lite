@@ -13,11 +13,15 @@
  * limitations under the License.
  */
 #include "endpoint.h"
+
 #include <stdlib.h>
 #include <securec.h>
+#include <unistd.h>
+
 #include <ohos_errno.h>
 #include <service.h>
 #include <log.h>
+
 #include "policy_define.h"
 #include "iproxy_server.h"
 #include "memory_adapter.h"
@@ -49,13 +53,6 @@
 #define MAX_BURST_RATE (MAX_BUCKET_RATE + (MAX_BUCKET_RATE >> 1))
 #endif
 
-#ifndef MAX_SYSCAP_NUM
-#define MAX_SYSCAP_NUM 512
-#endif
-
-#ifndef MAX_SYSCAP_NAME_LEN
-#define MAX_SYSCAP_NAME_LEN 64
-#endif
 #define SAMGR_SERVICE "samgr"
 
 typedef struct Router {
@@ -166,7 +163,7 @@ int32 SAMGR_AddSysCap(const Endpoint *endpoint, const char *sysCap, BOOL isReg)
     }
 
     if (replyBuf != NULL) {
-        FreeBuffer(endpoint, replyBuf);
+        FreeBuffer(endpoint->context, replyBuf);
     }
     HILOG_DEBUG(HILOG_MODULE_SAMGR, "SAMGR_AddSysCap ret = %d", ret);
 
@@ -200,7 +197,7 @@ int32 SAMGR_GetSysCap(const Endpoint *endpoint, const char *sysCap, BOOL *isReg)
         *isReg = IpcIoPopBool(&reply);
     }
     if (replyBuf != NULL) {
-        FreeBuffer(endpoint, replyBuf);
+        FreeBuffer(endpoint->context, replyBuf);
     }
     HILOG_DEBUG(HILOG_MODULE_SAMGR, "SAMGR_GetSysCap ret = %d", ret);
     return ret;
@@ -235,7 +232,7 @@ static int32 ParseGetAllSysCapsReply(IpcIo *reply, char sysCaps[MAX_SYSCAP_NUM][
     size = ((size > MAX_SYSCAP_NUM) ? MAX_SYSCAP_NUM : size);
     int cnt = *sysCapNum;
     for (uint32 i = 0; i < size; i++) {
-        int len = 0;
+        uint32 len = 0;
         char *sysCap = (char *)IpcIoPopString(reply, &len);
         if (sysCap == NULL || len == 0) {
             continue;
@@ -263,7 +260,7 @@ int32 SAMGR_GetSystemCapabilities(const Endpoint *endpoint,
     HILOG_DEBUG(HILOG_MODULE_SAMGR, "SAMGR_GetSystemCapabilities begin");
     IpcIo reply;
     void *replyBuf = NULL;
-    int startIdx = 0;
+    uint32 startIdx = 0;
     BOOL isEnd = TRUE;
     int ret;
     do {
@@ -272,7 +269,7 @@ int32 SAMGR_GetSystemCapabilities(const Endpoint *endpoint,
             ret = ParseGetAllSysCapsReply(&reply, sysCaps, sysCapNum, &isEnd, &startIdx);
         }
         if (replyBuf != NULL) {
-            FreeBuffer(endpoint, replyBuf);
+            FreeBuffer(endpoint->context, replyBuf);
         }
     } while (isEnd == FALSE && ret == EC_SUCCESS);
     HILOG_DEBUG(HILOG_MODULE_SAMGR, "SAMGR_GetSystemCapabilities ret = %d", ret);
@@ -362,7 +359,7 @@ static void *Receive(void *argv)
     }
 
     int ret = EC_INVALID;
-    uint8 retry = 0;
+    uint32 retry = 0;
     while (retry < MAX_RETRY_TIMES) {
         ret = endpoint->registerEP(endpoint->context, &endpoint->identity);
         if (ret == EC_SUCCESS) {
@@ -513,7 +510,7 @@ static int RegisterIdentity(const IpcContext *context, const SaName *saName, Svc
         ret = IpcIoPopInt32(&reply);
     }
     if (ret == EC_SUCCESS) {
-        saInfo = IpcIoPopSvc(&reply);
+        IpcIoPopSvc(&reply);
         GetRemotePolicy(&reply, policy, policyNum);
     }
     if (replyBuf != NULL) {
@@ -554,7 +551,7 @@ static int RegisterRemoteEndpoint(const IpcContext *context, SvcIdentity *identi
     IpcIoInit(&req, data, MAX_DATA_LEN, 0);
     IpcIoPushUint32(&req, RES_ENDPOINT);
     IpcIoPushUint32(&req, OP_POST);
-    uint8 retry = 0;
+    uint32 retry = 0;
     while (retry < MAX_RETRY_TIMES) {
         ++retry;
         IpcIo reply;
