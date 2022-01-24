@@ -17,18 +17,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+
 #include <ohos_init.h>
 #include <ohos_types.h>
 #include <ohos_errno.h>
 #include <liteipc.h>
 #include <liteipc_adapter.h>
 #include <log.h>
+
 #include "cJSON.h"
+#include "default_client.h"
 #include "policy_define.h"
 #include "samgr_lite.h"
-#include "memory_adapter.h"
+#include "securec.h"
 #include "thread_adapter.h"
-#include "default_client.h"
+#include "memory_adapter.h"
 
 #undef LOG_TAG
 #undef LOG_DOMAIN
@@ -380,7 +383,7 @@ static int32 ProcAddSysCap(SamgrServer *server, IpcIo *req)
         return EC_FAILURE;
     }
     SysCapImpl *serviceImpl = (SysCapImpl *)VECTOR_At(sysCapablitys, pos);
-    if (serviceImpl == NULL || serviceImpl->name == NULL) {
+    if (serviceImpl == NULL) {
         MUTEX_Unlock(server->sysCapMtx);
         return EC_FAILURE;
     }
@@ -389,7 +392,7 @@ static int32 ProcAddSysCap(SamgrServer *server, IpcIo *req)
     return EC_SUCCESS;
 }
 
-static BOOL ProcGetSysCap(const SamgrServer *server, IpcIo *req)
+static BOOL ProcGetSysCap(SamgrServer *server, IpcIo *req)
 {
     size_t len = 0;
     char *sysCap = (char *)IpcIoPopString(req, &len);
@@ -415,7 +418,7 @@ static BOOL ProcGetSysCap(const SamgrServer *server, IpcIo *req)
     return res;
 }
 
-static int32 GetReplyNumAndNextReqIdx(const Vector *sysCapablitys, int32 startIdx, int32 *nextRequestIdx)
+static int32 GetReplyNumAndNextReqIdx(Vector *sysCapablitys, int32 startIdx, int32 *nextRequestIdx)
 {
     int32 registerNum = 0;
     int32 size = VECTOR_Num(sysCapablitys);
@@ -431,7 +434,7 @@ static int32 GetReplyNumAndNextReqIdx(const Vector *sysCapablitys, int32 startId
     return registerNum;
 }
 
-void ProcGetAllSysCap(const SamgrServer *server, IpcIo *req, IpcIo *reply)
+void ProcGetAllSysCap(SamgrServer *server, IpcIo *req, IpcIo *reply)
 {
     uint32_t startIdx = IpcIoPopUint32(req);
     MUTEX_Lock(server->sysCapMtx);

@@ -19,7 +19,7 @@ config("endpoint_public") {
     "//utils/native/lite/include",
     "//foundation/communication/ipc_lite/interfaces/kits",
     "//third_party/bounds_checking_function/include",
-    "//base/security/permission/services/permission_lite/ipc_auth/include"
+    "//base/security/permission/services/permission_lite/ipc_auth/include",
   ]
 }
 
@@ -41,7 +41,10 @@ source_set("endpoint_source") {
   ]
 
   if (ohos_kernel_type == "linux") {
-    defines = [ "LITE_LINUX_BINDER_IPC" ]
+    defines = [
+      "_GNU_SOURCE",
+      "LITE_LINUX_BINDER_IPC",
+    ]
   }
 
   configs += [ ":endpoint_internal" ]
