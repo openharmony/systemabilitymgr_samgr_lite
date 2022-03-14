@@ -249,7 +249,7 @@ typedef struct SamgrLite {
     IUnknown *(*GetFeatureApi)(const char *serviceName, const char *feature);
 
     /**
-     * @brief Adds system capablity.
+     * @brief Adds system capability.
      *
      * You can call this function to add the system capability. \n
      *

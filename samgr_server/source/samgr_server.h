@@ -36,7 +36,7 @@ typedef struct SamgrProxy SamgrProxy;
 typedef struct SysCapImpl SysCapImpl;
 typedef enum MsgId {
     MSG_CLEAN,
-}MsgId;
+} MsgId;
 struct SamgrProxy {
     INHERIT_SERVER_IPROXY;
 };

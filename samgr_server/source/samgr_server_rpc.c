@@ -543,7 +543,7 @@ void ProcGetAllSysCap(SamgrServer *server, IpcIo *req, IpcIo *reply)
     }
     int32 nextRequestIdx = startIdx;
     int32 replyNum = GetReplyNumAndNextReqIdx(sysCapablitys, startIdx, &nextRequestIdx);
-    HILOG_DEBUG(HILOG_MODULE_SAMGR, "ProcGetAllSysCap replyNum: %d, size: %d, startIdx: %d, nextRequestIdx: %d",
+    HILOG_DEBUG(HILOG_MODULE_SAMGR, "ProcGetAllSysCap replyNum: %d, size: %d, startIdx: %u, nextRequestIdx: %d",
                 replyNum, size, startIdx, nextRequestIdx);
     WriteInt32(reply, EC_SUCCESS);
     // indicate is the last reply
