@@ -45,13 +45,13 @@ TaskPool *SAMGR_CreateFixedTaskPool(const TaskConfig *config, const char *name, 
 
     MQueueId queueId = (MQueueId)QUEUE_Create(name, sizeof(Exchange), config->queueSize);
     if (queueId == NULL) {
-        HILOG_ERROR(HILOG_MODULE_SAMGR, "Create Queue<%s> size:%d failed!", name, config->queueSize);
+        HILOG_ERROR(HILOG_MODULE_SAMGR, "Create Queue<%s> size:%hu failed!", name, config->queueSize);
         return NULL;
     }
 
     TaskPool *taskPool = (TaskPool *)SAMGR_Malloc(sizeof(TaskPool) + sizeof(ThreadId) * size);
     if (taskPool == NULL) {
-        HILOG_ERROR(HILOG_MODULE_SAMGR, "Create TaskPool<%s> size:%hhu failed!", name, config->queueSize);
+        HILOG_ERROR(HILOG_MODULE_SAMGR, "Create TaskPool<%s> size:%hu failed!", name, config->queueSize);
         QUEUE_Destroy(queueId);
         return NULL;
     }
