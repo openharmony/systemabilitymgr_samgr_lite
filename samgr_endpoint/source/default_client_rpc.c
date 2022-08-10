@@ -229,10 +229,10 @@ static SvcIdentity QueryIdentity(const char *service, const char *feature)
     MessageOption flag;
     MessageOptionInit(&flag);
     int ret = SendRequest(*samgr, INVALID_INDEX, &req, &reply, flag, (uintptr_t *)&replyBuf);
-    int32_t sa_ret = EC_FAILURE;
-    ret = (ret != EC_SUCCESS) ? EC_FAILURE : ReadInt32(&reply, &sa_ret);
+    int32_t saRet = EC_FAILURE;
+    ret = (ret != EC_SUCCESS) ? EC_FAILURE : ReadInt32(&reply, &saRet);
     SvcIdentity target = {INVALID_INDEX, INVALID_INDEX, INVALID_INDEX};
-    if (sa_ret == EC_SUCCESS) {
+    if (saRet == EC_SUCCESS) {
         ReadRemoteObject(&reply, &target);
         uint32_t token;
         ReadUint32(&reply, &token);
