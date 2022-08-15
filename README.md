@@ -627,7 +627,13 @@ Main objects of the SA framework:
 
 ## Repositories Involved<a name="section10365113863719"></a>
 
-Distributed Scheduler subsystem
+System Ability Management Subsystem
 
-**samgr\_lite**
+[**systemabilitymgr\_samgr\_lite**](https://gitee.com/openharmony/systemabilitymgr_samgr_lite)
+
+[systemabilitymgr\_samgr](https://gitee.com/openharmony/systemabilitymgr_samgr)
+
+[systemabilitymgr\_safwk](https://gitee.com/openharmony/systemabilitymgr_safwk)
+
+[systemabilitymgr\_safwk\_lite](https://gitee.com/openharmony/systemabilitymgr_safwk_lite)
 
