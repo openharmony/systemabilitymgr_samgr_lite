@@ -15,6 +15,7 @@
 #include "default_client_adapter.h"
 #include "samgr_server.h"
 #include "dbinder_service.h"
+#define MAX_COUNT_NUM = 2;
 static pthread_mutex_t g_handleMutex = PTHREAD_MUTEX_INITIALIZER;
 static int32_t g_handle = 0;
 
@@ -42,8 +43,8 @@ void ProxyInvokeArgInner(IpcIo *reply, IClientHeader *header)
 
 SvcIdentity QueryRemoteIdentityInner(const char *deviceId, const char *service, const char *feature)
 {
-    char saName[2 * MAX_NAME_LEN + 2];
-    (void)sprintf_s(saName, 2 * MAX_NAME_LEN + 2, "%s#%s", service?service:"", feature?feature:"");
+    char saName[MAX_COUNT_NUM * MAX_NAME_LEN + MAX_COUNT_NUM];
+    (void)sprintf_s(saName, MAX_COUNT_NUM * MAX_NAME_LEN + MAX_COUNT_NUM, "%s#%s", service?service:"", feature?feature:"");
     HILOG_INFO(HILOG_MODULE_SAMGR, "saName %s, make remote binder start", saName);
 
     SvcIdentity target = {INVALID_INDEX, INVALID_INDEX, INVALID_INDEX};
