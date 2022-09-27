@@ -19,7 +19,7 @@ config("samgr_adapter_public") {
   ]
 }
 
-if (ohos_kernel_type == "liteos_m") {
+if (ohos_kernel_type == "liteos_m" || ohos_kernel_type == "uniproton") {
   static_library("samgr_adapter") {
     sources = [
       "cmsis/memory_adapter.c",
@@ -30,10 +30,12 @@ if (ohos_kernel_type == "liteos_m") {
 
     public_configs = [ ":samgr_adapter_public" ]
 
-    include_dirs = [
-      "//kernel/liteos_m/kal/",
-      "//kernel/liteos_m/kal/cmsis",
-    ]
+    if (ohos_kernel_type == "liteos_m") {
+      include_dirs = [
+        "//kernel/liteos_m/kal/",
+        "//kernel/liteos_m/kal/cmsis",
+      ]
+    }
   }
 }
 
