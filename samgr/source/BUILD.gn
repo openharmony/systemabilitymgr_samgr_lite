@@ -23,7 +23,7 @@ config("samgr_source_public") {
   ]
 }
 
-if (ohos_kernel_type == "liteos_m") {
+if (ohos_kernel_type == "liteos_m" || ohos_kernel_type == "uniproton") {
   static_library("samgr_source") {
     sources = [
       "common.c",
