@@ -15,7 +15,7 @@
 #include "default_client_adapter.h"
 #include "samgr_server.h"
 #include "dbinder_service.h"
-#define MAX_COUNT_NUM = 2
+#define MAX_COUNT_NUM 2
 static pthread_mutex_t g_handleMutex = PTHREAD_MUTEX_INITIALIZER;
 static int32_t g_handle = 0;
 
