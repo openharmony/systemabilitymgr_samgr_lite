@@ -15,7 +15,7 @@
 #include "default_client_adapter.h"
 #include "samgr_server.h"
 #include "dbinder_service.h"
-#define MAX_COUNT_NUM = 2
+#define MAX_COUNT_NUM 2
 static pthread_mutex_t g_handleMutex = PTHREAD_MUTEX_INITIALIZER;
 static int32_t g_handle = 0;
 
@@ -44,11 +44,15 @@ void ProxyInvokeArgInner(IpcIo *reply, IClientHeader *header)
 SvcIdentity QueryRemoteIdentityInner(const char *deviceId, const char *service, const char *feature)
 {
     char saName[MAX_COUNT_NUM * MAX_NAME_LEN + MAX_COUNT_NUM];
-    (void)sprintf_s(saName, MAX_COUNT_NUM * MAX_NAME_LEN + MAX_COUNT_NUM,
+    int count = sprintf_s(saName, MAX_COUNT_NUM * MAX_NAME_LEN + MAX_COUNT_NUM,
         "%s#%s", service?service:"", feature?feature:"");
     HILOG_INFO(HILOG_MODULE_SAMGR, "saName %s, make remote binder start", saName);
 
     SvcIdentity target = {INVALID_INDEX, INVALID_INDEX, INVALID_INDEX};
+    if (count < 0) {
+        HILOG_ERROR(HILOG_MODULE_SAMGR, "sprintf_s failed");
+        return target;
+    }
     SaNode *saNode = GetSaNodeBySaName(service, feature);
     if (saNode == NULL) {
         HILOG_ERROR(HILOG_MODULE_SAMGR, "service: %s feature: %s have no saId in sa map", service, feature);
