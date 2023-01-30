@@ -44,6 +44,7 @@
 #define MAX_REGISTER_RETRY_TIMES 10
 #define REGISTER_RETRY_INTERVAL 2
 #define MAX_POLICY_NUM 8
+#define MAX_SERVICE_POLICY_NUM 10000
 
 #ifndef MAX_BUCKET_RATE
 #define MAX_BUCKET_RATE 1000
@@ -658,8 +659,8 @@ static void GetRemotePolicy(IpcIo *reply, PolicyTrans **policy, uint32 *policyNu
 
 static boolean JudgePolicy(uid_t callingUid, const PolicyTrans *policy, uint32 policyNum)
 {
-    if (policy == NULL) {
-        HILOG_ERROR(HILOG_MODULE_SAMGR, "Policy is NULL! Num is %u", policyNum);
+    if (policy == NULL || policyNum > MAX_SERVICE_POLICY_NUM) {
+        HILOG_ERROR(HILOG_MODULE_SAMGR, "Policy is NULL or policyNum is out of range! Num is %u", policyNum);
         return FALSE;
     }
 
