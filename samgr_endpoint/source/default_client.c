@@ -245,7 +245,9 @@ static SvcIdentity QueryIdentity(const IpcContext *context, const char *service,
             BinderAcquire(svc->ipcContext, svc->handle);
 #endif
             target = *svc;
+#ifdef __LINUX__
             free(svc);
+#endif
         }
     }
     if (ret == EC_PERMISSION) {
