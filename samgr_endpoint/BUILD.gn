@@ -46,6 +46,7 @@ if (!enable_ohos_systemabilitymgr_samgr_lite_rpc_mini) {
       "-fPIC",
       "-Wall",
     ]
+    cflags += [ "-Wno-int-conversion" ]
 
     if (ohos_kernel_type == "linux") {
       defines = [
