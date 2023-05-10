@@ -57,11 +57,11 @@
             "register-on-startup":true
         },
         {
-            "name":"SystemCapability.Graphic.UI",
+            "name":"SystemCapability.Arkui.UILite",
             "register-on-startup":true
         },
         {
-            "name":"SystemCapability.Graphic.WMS",
+            "name":"SystemCapability.Window.WindowManagerLite",
             "register-on-startup":false
         },
         {
