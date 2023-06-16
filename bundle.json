@@ -1,5 +1,5 @@
 {
-    "name": "@ohos/systemabilitymgr_samgr_lite",
+    "name": "@ohos/samgr_lite",
     "description": "system ability manager",
     "homePage": "https://gitee.com/openharmony",
     "version": "3.1",
@@ -27,7 +27,6 @@
         "ram": "2048KB",
         "deps": {
             "components": [
-                "utils_base",
                 "hilog_lite"
             ],
             "third_party": [
