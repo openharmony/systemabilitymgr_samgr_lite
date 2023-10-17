@@ -2,13 +2,14 @@
     "name": "@ohos/samgr_lite",
     "description": "system ability manager",
     "homePage": "https://gitee.com/openharmony",
-    "version": "3.1",
+    "version": "4.0.2",
     "license": "Apache License 2.0",
     "repository": "https://gitee.com/openharmony/systemabilitymgr_samgr_lite",
     "publishAs": "code-segment",
     "segment": {
         "destPath": "foundation/systemabilitymgr/samgr_lite"
     },
+    "supplier":"Organization:OpenHarmony",
     "dirs": {},
     "scripts": {},
     "component": {
@@ -27,7 +28,11 @@
         "ram": "2048KB",
         "deps": {
             "components": [
-                "hilog_lite"
+                "hilog_lite",
+                "ipc",
+                "liteos_m",
+                "permission_lite",
+                "utils_lite"
             ],
             "third_party": [
                 "bounds_checking_function",
