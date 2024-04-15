@@ -179,7 +179,7 @@ static int ProxyInvoke(IClientProxy *proxy, int funcId, IpcIo *request, IOwner o
         IpcIoInit(&requestWrapper, data, MAX_IO_SIZE, MAX_OBJ_NUM);
     }
     ProxyInvokeArgInner(&requestWrapper, header);
-    if(request != NULL) {
+    if (request != NULL) {
         if (!IpcIoAppend(&requestWrapper, request)) {
             HILOG_ERROR(HILOG_MODULE_SAMGR, "ipc io append fail\n");
             free(data);

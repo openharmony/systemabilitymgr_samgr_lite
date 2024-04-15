@@ -340,7 +340,9 @@ static void GetRemotePolicy(IpcIo *reply, PolicyTrans **policy, uint32 *policyNu
         return;
     }
     for (i = 0; i < *policyNum; i++) {
-        if (ReadInt32(reply, &(*policy)[i].type)) {
+        if (!ReadInt32(reply, &(*policy)[i].type)) {
+            continue;
+        }
             switch ((*policy)[i].type) {
                 case RANGE:
                     ReadInt32(reply, &((*policy)[i].uidMin));
@@ -357,6 +359,6 @@ static void GetRemotePolicy(IpcIo *reply, PolicyTrans **policy, uint32 *policyNu
                 default:
                     break;
             }
-        }
+        
     }
 }
