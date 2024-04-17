@@ -343,22 +343,22 @@ static void GetRemotePolicy(IpcIo *reply, PolicyTrans **policy, uint32 *policyNu
         if (!ReadInt32(reply, &(*policy)[i].type)) {
             continue;
         }
-            switch ((*policy)[i].type) {
-                case RANGE:
-                    ReadInt32(reply, &((*policy)[i].uidMin));
-                    ReadInt32(reply, &((*policy)[i].uidMax));
-                    break;
-                case FIXED:
-                    for (j = 0; j < UID_SIZE; j++) {
-                        ReadInt32(reply, &((*policy)[i].fixedUid[j]));
-                    }
-                    break;
-                case BUNDLENAME:
-                    ReadInt32(reply, &((*policy)[i].fixedUid[0]));
-                    break;
-                default:
-                    break;
-            }
+        switch ((*policy)[i].type) {
+            case RANGE:
+                ReadInt32(reply, &((*policy)[i].uidMin));
+                ReadInt32(reply, &((*policy)[i].uidMax));
+                break;
+            case FIXED:
+                for (j = 0; j < UID_SIZE; j++) {
+                    ReadInt32(reply, &((*policy)[i].fixedUid[j]));
+                }
+                break;
+            case BUNDLENAME:
+                ReadInt32(reply, &((*policy)[i].fixedUid[0]));
+                break;
+            default:
+                break;
+        }
         
     }
 }
