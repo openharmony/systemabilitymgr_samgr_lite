@@ -15,6 +15,7 @@
 #include "default_client_adapter.h"
 #include "samgr_server.h"
 #include "dbinder_service.h"
+#include "ipc_process_skeleton.h"
 #define MAX_COUNT_NUM 2
 static pthread_mutex_t g_handleMutex = PTHREAD_MUTEX_INITIALIZER;
 static int32_t g_handle = 0;
@@ -64,7 +65,6 @@ SvcIdentity QueryRemoteIdentityInner(const char *deviceId, const char *service, 
         return target;
     }
     target.handle = GetNextHandle();
-    extern void WaitForProxyInit(SvcIdentity *svc);
     WaitForProxyInit(&target);
     HILOG_ERROR(HILOG_MODULE_SAMGR, "MakeRemoteBinder sid handle=%d", target.handle);
     return target;

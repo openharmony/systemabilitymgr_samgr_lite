@@ -47,6 +47,7 @@ typedef int(*ProcFunc)(SamgrServer *server, int32 option, void *origin, IpcIo *r
 #define MAX_SA_SIZE 0x100
 #define RETRY_TIMES 3
 #define RETRY_INTERVAL 1
+#define MINI_SA_RPC_ID 16
 #define UID_HAP 10000
 #define MAX_SYSCAP_NUM_PER_REPLY 118
 
@@ -168,7 +169,7 @@ static void InitializeGSaList(void)
     }
     saNode->saName.service = "mini_sa_rpc";
     saNode->saName.feature = NULL;
-    saNode->saId = 16;
+    saNode->saId = MINI_SA_RPC_ID;
     UtilsListInit(&g_saList);
     UtilsListAdd(&g_saList, &saNode->list);
 }
