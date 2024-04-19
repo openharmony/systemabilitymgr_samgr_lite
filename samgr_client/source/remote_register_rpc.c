@@ -53,7 +53,7 @@ int SAMGR_RegisterServiceApi(const char *service, const char *feature, const Ide
     int32 token = SAMGR_AddRouter(g_remoteRegister.endpoint, &saName, identity, iUnknown);
 #ifdef MINI_SAMGR_LITE_RPC
     char saNameStr[SA_NAME_NUM * MAX_NAME_LEN + SA_NAME_NUM];
-    (void)sprintf_s(saNameStr, 2 * MAX_NAME_LEN + 2, "%s#%s", service, feature?feature:"");
+    (void)sprintf_s(saNameStr, SA_NAME_NUM * MAX_NAME_LEN + SA_NAME_NUM, "%s#%s", service, feature?feature:"");
     HILOG_INFO(HILOG_MODULE_SAMGR, "register saname: %s index: %d\n", saNameStr, token);
     SaNode *saNode = GetSaNodeBySaName(service, feature);
     if (saNode != NULL) {
