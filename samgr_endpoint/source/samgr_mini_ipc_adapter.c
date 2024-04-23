@@ -31,7 +31,6 @@ int ClientRegisterRemoteEndpoint(SvcIdentity *identity, int token, const char *s
     identity->cookie = objectStubOne;
     // token is used by router index, should be itself, and save in SaNode
     identity->token = token;
-    extern int AddEndpoint(SvcIdentity identity, const char *service, const char *feature);
     return AddEndpoint(*identity, service, feature);
 }
 
@@ -42,7 +41,6 @@ void Listen(Endpoint *endpoint, int token, const char *service, const char *feat
 
 static int Dispatch(uint32_t code, IpcIo *data, IpcIo *reply, MessageOption option)
 {
-    extern RemoteRegister g_remoteRegister;
     Endpoint *endpoint = g_remoteRegister.endpoint;
     int token = GetRemoteToken(data);
     if (token == EC_INVALID) {

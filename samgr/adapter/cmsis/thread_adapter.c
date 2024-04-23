@@ -16,7 +16,6 @@
 #include "common.h"
 #include <cmsis_os.h>
 
-extern void *osThreadGetArgument(void);
 
 MutexId MUTEX_InitValue()
 {
