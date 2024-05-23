@@ -169,6 +169,6 @@ static void GetRemotePolicy(IpcIo *reply, PolicyTrans **policy, uint32 *policyNu
                 break;
             default:
                 break;
-        }     
+        }
     }
 }
