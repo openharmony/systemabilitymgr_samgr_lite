@@ -78,7 +78,10 @@ IUnknown *SAMGR_FindServiceApi(const char *service, const char *feature)
     SaName key = {service, feature};
     int index = VECTOR_FindByKey(&g_remoteRegister.clients, &key);
     if (index != INVALID_INDEX) {
-        return VECTOR_At(&g_remoteRegister.clients, index);
+        IUnknown *proxy = VECTOR_At(&g_remoteRegister.clients, index);
+        if (SAMGR_IsProxyValid(proxy)) {
+            return proxy;
+        }
     }
     IUnknown *proxy = SAMGR_CreateIProxy(service, feature);
     if (proxy == NULL) {
@@ -87,9 +90,10 @@ IUnknown *SAMGR_FindServiceApi(const char *service, const char *feature)
     MUTEX_Lock(g_remoteRegister.mtx);
     index = VECTOR_FindByKey(&g_remoteRegister.clients, &key);
     if (index != INVALID_INDEX) {
+        IUnknown *oldProxy = VECTOR_Swap(&g_remoteRegister.clients, index, proxy);
         MUTEX_Unlock(g_remoteRegister.mtx);
-        proxy->Release(proxy);
-        return VECTOR_At(&g_remoteRegister.clients, index);
+        oldProxy->Release(oldProxy);
+        return proxy;
     }
     VECTOR_Add(&g_remoteRegister.clients, proxy);
     MUTEX_Unlock(g_remoteRegister.mtx);

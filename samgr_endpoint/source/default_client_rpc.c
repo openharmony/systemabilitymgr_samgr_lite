@@ -24,6 +24,29 @@ static SvcIdentity QueryRemoteIdentity(const char *deviceId, const char *service
 static const IClientEntry DEFAULT_ENTRY = {CLIENT_IPROXY_BEGIN, .Invoke = ProxyInvoke, IPROXY_END};
 static MutexId g_mutex = NULL;
 
+BOOL SAMGR_IsProxyValid(IUnknown *proxy)
+{
+    if (proxy != NULL) {
+        IDefaultClient *client = GET_OBJECT(proxy, IDefaultClient, entry.iUnknown);
+        if (client == NULL) {
+            return false;
+        }
+        IClientHeader *header = &client->header;
+        if (header == NULL) {
+            return false;
+        }
+        if (header->deadId == INVALID_INDEX &&
+        header->target.handle == INVALID_INDEX &&
+        header->target.token == INVALID_INDEX &&
+        header->target.cookie == INVALID_INDEX) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
+
 IUnknown *SAMGR_CreateIProxy(const char *service, const char *feature)
 {
     SvcIdentity identity = QueryIdentity(service, feature);
