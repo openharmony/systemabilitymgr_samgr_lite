@@ -92,7 +92,9 @@ IUnknown *SAMGR_FindServiceApi(const char *service, const char *feature)
     if (index != INVALID_INDEX) {
         IUnknown *oldProxy = VECTOR_Swap(&g_remoteRegister.clients, index, proxy);
         MUTEX_Unlock(g_remoteRegister.mtx);
-        oldProxy->Release(oldProxy);
+        if (oldProxy != NULL) {
+            oldProxy->Release(oldProxy);
+        }
         return proxy;
     }
     VECTOR_Add(&g_remoteRegister.clients, proxy);
