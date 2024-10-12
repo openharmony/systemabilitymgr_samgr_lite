@@ -98,10 +98,16 @@ int THREAD_Total(void)
 
 void *THREAD_GetThreadLocal(void)
 {
+    if (g_localKey == -1) {
+        (void) pthread_once(&g_localKeyOnce, KeyCreate);
+    }
     return pthread_getspecific(g_localKey);
 }
 
 void THREAD_SetThreadLocal(const void *local)
 {
+    if (g_localKey == -1) {
+        (void) pthread_once(&g_localKeyOnce, KeyCreate);
+    }
     pthread_setspecific(g_localKey, local);
 }
