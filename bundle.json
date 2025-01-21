@@ -42,6 +42,15 @@
         "build": {
             "sub_component": [
                 "//foundation/systemabilitymgr/samgr_lite:samgr"
+            ],
+            "inner_kits": [
+                {
+                    "name": "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
+                    "header": {
+                        "header_files": [],
+                        "header_base": "//foundation/systemabilitymgr/samgr_lite/samgr/source"
+                    }
+                }
             ]
         }
     }
