@@ -34,8 +34,8 @@ LockFreeQueue *LFQUE_Create(int size, int count)
     }
     queue->write = 0;
     queue->read = 0;
-    queue->itemSize = size;
-    queue->totalSize = total;
+    queue->itemSize = (uint32)size;
+    queue->totalSize = (uint32)total;
     return queue;
 }
 

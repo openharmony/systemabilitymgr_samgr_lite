@@ -228,7 +228,7 @@ static BOOL ImmediatelyPublish(PubSubFeature *feature, const Topic *topic, const
             continue;
         }
 
-        Response response = {item->consumer, 0};
+        Response response = {item->consumer, 0, NULL};
         int ret = SAMGR_SendSharedDirectRequest(item->consumer->identity, request, &response, &token, DefaultHandle);
         if (ret != EC_SUCCESS) {
             needAync = FALSE;
