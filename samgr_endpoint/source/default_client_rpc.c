@@ -207,13 +207,14 @@ static void OnServiceExit(void *argv)
     header->target.handle = INVALID_INDEX;
     header->target.token = INVALID_INDEX;
     header->target.cookie = INVALID_INDEX;
-    HILOG_ERROR(HILOG_MODULE_SAMGR, "Miss the remote service<%u, %u>!", header->target.handle, header->target.token);
+    HILOG_ERROR(HILOG_MODULE_SAMGR, "Miss the remote service<%d>!", header->target.handle);
 }
 
 static SvcIdentity QueryIdentity(const char *service, const char *feature)
 {
     IpcIo req;
     uint8 data[MAX_DATA_LEN];
+    SvcIdentity target = {INVALID_INDEX, INVALID_INDEX, INVALID_INDEX};
     IpcIoInit(&req, data, MAX_DATA_LEN, 0);
     WriteInt32(&req, 0);
     WriteUint32(&req, RES_FEATURE);
@@ -226,12 +227,14 @@ static SvcIdentity QueryIdentity(const char *service, const char *feature)
     IpcIo reply;
     void *replyBuf = NULL;
     const SvcIdentity *samgr = GetContextObject();
+    if (samgr == NULL) {
+        return target;
+    }
     MessageOption flag;
     MessageOptionInit(&flag);
     int ret = SendRequest(*samgr, INVALID_INDEX, &req, &reply, flag, (uintptr_t *)&replyBuf);
     int32_t saRet = EC_FAILURE;
     ret = (ret != EC_SUCCESS) ? EC_FAILURE : ReadInt32(&reply, &saRet);
-    SvcIdentity target = {INVALID_INDEX, INVALID_INDEX, INVALID_INDEX};
     if (saRet == EC_SUCCESS) {
         ReadRemoteObject(&reply, &target);
         uint32_t token;

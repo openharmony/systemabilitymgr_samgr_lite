@@ -126,7 +126,7 @@ static void *TaskEntry(void *argv)
     THREAD_SetThreadLocal(argv);
     while (TRUE) {
         Exchange exchange;
-        uint32 msgRcvRet = SAMGR_MsgRecv((MQueueId)argv, (uint8 *)&exchange, sizeof(Exchange));
+        uint32 msgRcvRet = (uint32)SAMGR_MsgRecv((MQueueId)argv, (uint8 *)&exchange, sizeof(Exchange));
         if (msgRcvRet != EC_SUCCESS) {
             continue;
         }

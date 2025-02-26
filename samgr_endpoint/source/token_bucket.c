@@ -22,9 +22,9 @@ int TB_CheckMessage(TokenBucket *bucket)
         return BUCKET_INVALID;
     }
     uint64 now = SAMGR_GetProcessTime();
-    uint64 generated = (now > bucket->last) ? ((now - bucket->last) * bucket->rate) : 0;
+    uint64 generated = (now > bucket->last) ? ((now - bucket->last) * (uint64)bucket->rate) : 0;
     int used = bucket->used + TOKEN_PRE_MSG;
-    used = (generated > used) ? 0 : (used - (int)generated);
+    used = (generated > (uint64)used) ? 0 : (used - (int)generated);
     if (used >= bucket->burst * TOKEN_PRE_MSG) {
         return BUCKET_BUSY;
     }

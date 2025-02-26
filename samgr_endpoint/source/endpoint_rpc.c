@@ -48,7 +48,7 @@ Endpoint *SAMGR_CreateEndpoint(const char *name, RegisterEndpoint registry)
     endpoint->routers = VECTOR_Make((VECTOR_Key)GetIServerProxy, (VECTOR_Compare)CompareIServerProxy);
     endpoint->name = name;
     endpoint->running = FALSE;
-    endpoint->identity.handle = (uint32_t)INVALID_INDEX;
+    endpoint->identity.handle = (int32_t)INVALID_INDEX;
     endpoint->identity.token = (uint32_t)INVALID_INDEX;
     endpoint->identity.cookie = (uint32_t)INVALID_INDEX;
     endpoint->registerEP = (registry == NULL) ? RegisterRemoteEndpoint : registry;
@@ -116,6 +116,9 @@ int32 SAMGR_AddSysCap(const Endpoint *endpoint, const char *sysCap, BOOL isReg)
     IpcIo reply;
     void *replyBuf = NULL;
     SvcIdentity *samgr = GetContextObject();
+    if (samgr == NULL) {
+        return EC_INVALID;
+    }
     MessageOption option;
     MessageOptionInit(&option);
     int ret = SendRequest(*samgr, INVALID_INDEX, &req, &reply,
@@ -151,6 +154,9 @@ int32 SAMGR_GetSysCap(const Endpoint *endpoint, const char *sysCap, BOOL *isReg)
     IpcIo reply;
     void *replyBuf = NULL;
     SvcIdentity *samgr = GetContextObject();
+    if (samgr == NULL) {
+        return EC_INVALID;
+    }
     MessageOption option;
     MessageOptionInit(&option);
     int ret = SendRequest(*samgr, INVALID_INDEX, &req, &reply,
@@ -181,6 +187,9 @@ static int SendGetAllSysCapsRequest(const Endpoint *endpoint, uint32 startIdx, I
     WriteUint32(&req, OP_ALL);
     WriteUint32(&req, startIdx);
     SvcIdentity *samgr = GetContextObject();
+    if (samgr == NULL) {
+        return EC_INVALID;
+    }
     MessageOption option;
     MessageOptionInit(&option);
     int ret = SendRequest(*samgr, INVALID_INDEX, &req, reply,
@@ -192,6 +201,9 @@ static int SendGetAllSysCapsRequest(const Endpoint *endpoint, uint32 startIdx, I
 static int32 ParseGetAllSysCapsReply(IpcIo *reply, char sysCaps[MAX_SYSCAP_NUM][MAX_SYSCAP_NAME_LEN],
                                      int32 *sysCapNum, BOOL *isEnd, uint32 *nextRequestIdx)
 {
+    if (isEnd == NULL) {
+        return EC_INVALID;
+    }
     int32_t ret;
     if (ReadInt32(reply, &ret)) {
         if (ret != EC_SUCCESS) {
@@ -272,8 +284,8 @@ int SAMGR_ProcPolicy(const Endpoint *endpoint, const SaName *saName, int token)
             SAMGR_Free(policy);
             continue;
         }
-        HILOG_INFO(HILOG_MODULE_SAMGR, "Register server sa<%s, %s> id<%lu, %u> retry:%d ret:%d!",
-                   saName->service, saName->feature, saInfo.handle, saInfo.token, retry, ret);
+        HILOG_INFO(HILOG_MODULE_SAMGR, "Register server sa<%s, %s> id<%d> retry:%d ret:%d!",
+                   saName->service, saName->feature, saInfo.handle, retry, ret);
         ret = AddPolicyToRouter(endpoint, &saInfo, policy, policyNum);
         SAMGR_Free(policy);
         if (ret == EC_SUCCESS) {
@@ -293,7 +305,7 @@ static int AddPolicyToRouter(const Endpoint *endpoint, const SvcIdentity *saInfo
 
     Router *router = VECTOR_At((Vector *)&endpoint->routers, saInfo->token);
     if (router == NULL) {
-        HILOG_ERROR(HILOG_MODULE_SAMGR, "Router <%s, %u> is NULL", endpoint->name, saInfo->token);
+        HILOG_ERROR(HILOG_MODULE_SAMGR, "Router <%s> is NULL", endpoint->name);
         return EC_INVALID;
     }
 

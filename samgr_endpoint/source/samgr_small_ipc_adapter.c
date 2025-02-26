@@ -50,7 +50,9 @@ int ClientRegisterRemoteEndpoint(SvcIdentity *identity, int token, const char *s
         MessageOption option;
         MessageOptionInit(&option);
         SvcIdentity *samgr = GetContextObject();
-
+        if (samgr == NULL) {
+            continue;
+        }
         int err = SendRequest(*samgr, INVALID_INDEX, &req, &reply, option, (uintptr_t *)&replyBuf);
         if (err == EC_SUCCESS) {
             ret = ReadInt32(&reply, &identity->handle);
@@ -112,6 +114,9 @@ static void *Receive(void *argv)
             registerEpArg->token, registerEpArg->service, registerEpArg->feature);
         if (ret == EC_SUCCESS) {
             SvcIdentity *samgr = GetContextObject();
+            if (samgr == NULL) {
+                continue;
+            }
             (void)RemoveDeathRecipient(*samgr, registerEpArg->endpoint->deadId);
             (void)AddDeathRecipient(*samgr, OnSamgrServerExit, registerEpArg->endpoint,
                 &registerEpArg->endpoint->deadId);
@@ -149,7 +154,7 @@ static int RegisterRemoteFeatures(Endpoint *endpoint)
             continue;
         }
         identity.handle = endpoint->identity.handle;
-        identity.token = i;
+        identity.token = (uintptr_t)i;
         int ret = RegisterIdentity(&(router->saName), &identity, &(router->policy),
                                    &(router->policyNum));
         if (ret == EC_SUCCESS) {
@@ -178,6 +183,9 @@ int RegisterIdentity(const SaName *saName, SvcIdentity *saInfo, PolicyTrans **po
     IpcIo reply;
     void *replyBuf = NULL;
     SvcIdentity *samgr = GetContextObject();
+    if (samgr == NULL) {
+        return EC_INVALID;
+    }
     MessageOption option;
     MessageOptionInit(&option);
     int ret = SendRequest(*samgr, INVALID_INDEX, &req, &reply, option,
@@ -205,12 +213,12 @@ static int Dispatch(uint32_t code, IpcIo *data, IpcIo *reply, MessageOption opti
         goto ERROR;
     }
     if (TB_CheckMessage(&endpoint->bucket) == BUCKET_BUSY) {
-        HILOG_WARN(HILOG_MODULE_SAMGR, "Flow Control <%u> is NULL", token);
+        HILOG_WARN(HILOG_MODULE_SAMGR, "Flow Control token is NULL");
         goto ERROR;
     }
     Router *router = VECTOR_At(&endpoint->routers, token);
     if (router == NULL) {
-        HILOG_ERROR(HILOG_MODULE_SAMGR, "Router <%s, %u> is NULL", endpoint->name, token);
+        HILOG_ERROR(HILOG_MODULE_SAMGR, "Router <%s> is NULL", endpoint->name);
         goto ERROR;
     }
 
@@ -236,7 +244,7 @@ static void HandleIpc(const Request *request, const Response *response)
         HILOG_ERROR(HILOG_MODULE_SAMGR, "Invalid IPC router!");
         return;
     }
-    uid_t uid = GetCallingUid();
+    uid_t uid = (uid_t)GetCallingUid();
     if ((strcmp(router->saName.service, SAMGR_SERVICE) != 0) &&
         !JudgePolicy(uid, (const PolicyTrans *)(router->policy), router->policyNum)) {
         HILOG_ERROR(HILOG_MODULE_SAMGR, "Consumer uid<%d> has no permission to access<%s, %d, %d>!",
@@ -267,7 +275,7 @@ static boolean SearchFixedPolicy(uid_t callingUid, PolicyTrans policy)
 {
     int i;
     for (i = 0; i < UID_SIZE; i++) {
-        if (callingUid == policy.fixedUid[i]) {
+        if (callingUid == (uid_t)policy.fixedUid[i]) {
             return TRUE;
         }
     }

@@ -216,7 +216,7 @@ SvcIdentity SASTORA_Find(SAStore *saStore, const char *service, const char *feat
         return identity;
     }
 
-    identity.handle = curNode->info.handle;
+    identity.handle = (int32_t)curNode->info.handle;
     identity.cookie = curNode->info.cookie;
     FeatureNode *featureNode = FindFeatureByName(curNode->info.head, feature);
     if (featureNode != NULL) {
