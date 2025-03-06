@@ -674,9 +674,10 @@ static cJSON *GetJsonStream()
     struct stat fileInfo;
     int32_t size = 0;
 
-    if (stat(path, &fileInfo) != 0 || (size = fileInfo.st_size) == 0) {
+    if (stat(path, &fileInfo) != 0 || fileInfo.st_size == 0) {
         return NULL;
     }
+    size = fileInfo.st_size;
 
     int32_t fp = open(path, O_RDONLY, S_IRUSR);
     if (fp < 0) {
