@@ -18,8 +18,8 @@ typedef struct IRegisterEpArg IRegisterEpArg;
 struct IRegisterEpArg {
     Endpoint *endpoint;
     int token;
-    const char *service;
-    const char *feature;
+    char *service;
+    char *feature;
 };
 static int Dispatch(uint32_t code, IpcIo *data, IpcIo *reply, MessageOption option);
 static void HandleIpc(const Request *request, const Response *response);
