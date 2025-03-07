@@ -115,7 +115,7 @@ static void *Receive(void *argv)
             registerEpArg->token, registerEpArg->service, registerEpArg->feature);
         if (ret == EC_SUCCESS) {
             const SvcIdentity *samgr = GetContextObject();
-            if (samgr == NULL) {
+            if (samgr != NULL) {
                 (void)RemoveDeathRecipient(*samgr, registerEpArg->endpoint->deadId);
                 (void)AddDeathRecipient(*samgr, OnSamgrServerExit, registerEpArg->endpoint,
                     &registerEpArg->endpoint->deadId);
