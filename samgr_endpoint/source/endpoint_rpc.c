@@ -115,7 +115,7 @@ int32 SAMGR_AddSysCap(const Endpoint *endpoint, const char *sysCap, BOOL isReg)
 
     IpcIo reply;
     void *replyBuf = NULL;
-    SvcIdentity *samgr = GetContextObject();
+    const SvcIdentity *samgr = GetContextObject();
     if (samgr == NULL) {
         return EC_INVALID;
     }
@@ -153,7 +153,7 @@ int32 SAMGR_GetSysCap(const Endpoint *endpoint, const char *sysCap, BOOL *isReg)
 
     IpcIo reply;
     void *replyBuf = NULL;
-    SvcIdentity *samgr = GetContextObject();
+    const SvcIdentity *samgr = GetContextObject();
     if (samgr == NULL) {
         return EC_INVALID;
     }
@@ -186,7 +186,7 @@ static int SendGetAllSysCapsRequest(const Endpoint *endpoint, uint32 startIdx, I
     WriteUint32(&req, RES_SYSCAP);
     WriteUint32(&req, OP_ALL);
     WriteUint32(&req, startIdx);
-    SvcIdentity *samgr = GetContextObject();
+    const SvcIdentity *samgr = GetContextObject();
     if (samgr == NULL) {
         return EC_INVALID;
     }

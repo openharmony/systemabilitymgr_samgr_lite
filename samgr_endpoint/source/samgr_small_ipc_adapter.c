@@ -49,8 +49,9 @@ int ClientRegisterRemoteEndpoint(SvcIdentity *identity, int token, const char *s
         void *replyBuf = NULL;
         MessageOption option;
         MessageOptionInit(&option);
-        SvcIdentity *samgr = GetContextObject();
+        const SvcIdentity *samgr = GetContextObject();
         if (samgr == NULL) {
+            usleep(RETRY_INTERVAL);
             continue;
         }
         int err = SendRequest(*samgr, INVALID_INDEX, &req, &reply, option, (uintptr_t *)&replyBuf);
@@ -113,14 +114,13 @@ static void *Receive(void *argv)
         ret = registerEpArg->endpoint->registerEP(&registerEpArg->endpoint->identity,
             registerEpArg->token, registerEpArg->service, registerEpArg->feature);
         if (ret == EC_SUCCESS) {
-            SvcIdentity *samgr = GetContextObject();
-            if (samgr == NULL) {
-                continue;
+            const SvcIdentity *samgr = GetContextObject();
+            if (samgr != NULL) {
+                (void)RemoveDeathRecipient(*samgr, registerEpArg->endpoint->deadId);
+                (void)AddDeathRecipient(*samgr, OnSamgrServerExit, registerEpArg->endpoint,
+                    &registerEpArg->endpoint->deadId);
+                break;
             }
-            (void)RemoveDeathRecipient(*samgr, registerEpArg->endpoint->deadId);
-            (void)AddDeathRecipient(*samgr, OnSamgrServerExit, registerEpArg->endpoint,
-                &registerEpArg->endpoint->deadId);
-            break;
         }
         ++retry;
         usleep(RETRY_INTERVAL);
@@ -182,7 +182,7 @@ int RegisterIdentity(const SaName *saName, SvcIdentity *saInfo, PolicyTrans **po
     WriteUint32(&req, saInfo->token);
     IpcIo reply;
     void *replyBuf = NULL;
-    SvcIdentity *samgr = GetContextObject();
+    const SvcIdentity *samgr = GetContextObject();
     if (samgr == NULL) {
         return EC_INVALID;
     }
