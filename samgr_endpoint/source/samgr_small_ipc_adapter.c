@@ -97,8 +97,8 @@ void Listen(Endpoint *endpoint, int token, const char *service, const char *feat
 
     registerEpArg->endpoint = endpoint;
     registerEpArg->token = token;
-    registerEpArg->service = service;
-    registerEpArg->feature = feature;
+    registerEpArg->service = (char *)service;
+    registerEpArg->feature = (char *)feature;
     endpoint->boss = (ThreadId)THREAD_Create(Receive, registerEpArg, &attr);
 }
 
@@ -348,7 +348,7 @@ static void GetRemotePolicy(IpcIo *reply, PolicyTrans **policy, uint32 *policyNu
         return;
     }
     for (i = 0; i < *policyNum; i++) {
-        if (!ReadInt32(reply, &(*policy)[i].type)) {
+        if (!ReadInt32(reply, (int32_t *)&(*policy)[i].type)) {
             continue;
         }
         switch ((*policy)[i].type) {
