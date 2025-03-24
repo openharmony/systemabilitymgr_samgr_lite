@@ -329,7 +329,7 @@ static int32 ProcPutFeature(SamgrServer *server, const void *origin, IpcIo *req,
         return EC_INVALID;
     }
 #ifndef MINI_SAMGR_LITE_RPC
-    ReadUint32(req, &identity->token);
+    ReadUint32(req, (uint32_t *)&identity->token);
 #else
     identity->token = ReadPointer(req);
 #endif

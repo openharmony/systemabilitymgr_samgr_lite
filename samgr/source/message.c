@@ -36,7 +36,7 @@ int32 SAMGR_SendRequest(const Identity *identity, const Request *request, Handle
         return EC_INVALID;
     }
 
-    Exchange exchange = {*identity, *request, {NULL, 0}, MSG_NON, handler, NULL};
+    Exchange exchange = {*identity, *request, {NULL, 0, NULL}, MSG_NON, handler, NULL};
     exchange.id.queueId = NULL;
     if (handler != NULL) {
         exchange.id.queueId = SAMGR_GetCurrentQueueID();
@@ -120,7 +120,7 @@ uint32 *SAMGR_SendSharedRequest(const Identity *identity, const Request *request
     if (identity == NULL || request == NULL) {
         return NULL;
     }
-    Exchange exchange = {*identity, *request, {NULL, 0}, MSG_NON, handler, token};
+    Exchange exchange = {*identity, *request, {NULL, 0, NULL}, MSG_NON, handler, token};
     exchange.type = (handler == NULL) ? MSG_NON : MSG_CON;
     exchange.id.queueId = NULL;
     int32 err = SharedSend(identity->queueId, &exchange, 0);
