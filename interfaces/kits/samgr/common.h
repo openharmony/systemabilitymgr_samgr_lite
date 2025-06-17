@@ -108,7 +108,7 @@ typedef struct SimpleVector {
     /** Peak value of the number of stored data records. The initial value is <b>0</b>. */
     int16 top;
     /** Number of data records that have been released. The initial value is <b>0</b>. */
-    int16 free;
+    int16 vFree;
     /** Data storage pointer */
     void **data;
     /**
