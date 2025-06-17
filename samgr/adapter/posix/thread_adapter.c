@@ -80,8 +80,8 @@ ThreadId THREAD_Create(Runnable run, void *argv, const ThreadAttr *attr)
     pthread_attr_setschedparam(&threadAttr, &sched);
     (void) pthread_once(&g_localKeyOnce, KeyCreate);
     pthread_t threadId = 0;
-    int errno = pthread_create(&threadId, &threadAttr, run, argv);
-    if (errno != 0) {
+    int err = pthread_create(&threadId, &threadAttr, run, argv);
+    if (err != 0) {
         return NULL;
     }
 
