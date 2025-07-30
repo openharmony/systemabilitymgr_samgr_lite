@@ -28,6 +28,7 @@ struct SaName {
     const char *feature;
 };
 
+BOOL SAMGR_IsProxyValid(IUnknown *proxy);
 IUnknown *SAMGR_CreateIProxy(const char *service, const char *feature);
 IUnknown *SAMGR_CreateIRemoteProxy(const char *deviceId, const char *service, const char *feature);
 SaName *SAMGR_GetSAName(const IUnknown *proxy);
