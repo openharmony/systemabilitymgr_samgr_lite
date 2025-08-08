@@ -34,7 +34,7 @@ void VECTOR_Clear(Vector *vector)
     SAMGR_Free(vector->data);
     vector->max = 0;
     vector->top = 0;
-    vector->free = 0;
+    vector->fre = 0;
     vector->data = NULL;
 }
 
@@ -50,7 +50,7 @@ int16 VECTOR_Add(Vector *vector, void *element)
         for (i = vector->top - (int16)1; i >= 0; --i) {
             if (vector->data[i] == NULL) {
                 vector->data[i] = element;
-                vector->free--;
+                vector->fre--;
                 return i;
             }
         }
@@ -94,7 +94,7 @@ void *VECTOR_Swap(Vector *vector, int16 index, void *element)
         return NULL;
     }
     if (element == NULL) {
-        vector->free++;
+        vector->fre++;
     }
     void *oldElement = vector->data[index];
     vector->data[index] = element;
@@ -150,5 +150,5 @@ int16 VECTOR_Num(Vector *vector)
     if (vector == NULL) {
         return INVALID_INDEX;
     }
-    return vector->top - vector->free;
+    return vector->top - vector->fre;
 }
