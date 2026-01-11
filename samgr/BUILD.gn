@@ -86,5 +86,9 @@ if (ohos_kernel_type == "liteos_a" || ohos_kernel_type == "linux") {
       "//foundation/systemabilitymgr/samgr_lite/samgr_client:client",
     ]
     public_configs += [ ":external_settings_shared" ]
+    if (ohos_kernel_type == "linux") {
+      deps = [ "//third_party/mksh" ]
+      external_deps = [ "toybox:toybox" ]
+    }
   }
 }
