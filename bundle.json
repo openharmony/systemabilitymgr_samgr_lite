@@ -31,7 +31,9 @@
                 "hilog_lite",
                 "ipc",
                 "liteos_m",
+                "mksh",
                 "permission_lite",
+                "toybox",
                 "utils_lite"
             ],
             "third_party": [
