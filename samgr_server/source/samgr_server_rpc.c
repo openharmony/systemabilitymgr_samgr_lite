@@ -288,7 +288,6 @@ static int ProcEndpoint(SamgrServer *server, int32 option, void *origin, IpcIo *
         handle.cookie = identity.cookie;
         handle.deadId = INVALID_INDEX;
         (void)SASTORA_SaveHandleByPid(&server->store, handle);
-        (void)RemoveDeathRecipient(identity, handle.deadId);
         (void)AddDeathRecipient(identity, OnEndpointExit, (void*)((uintptr_t)pid), &handle.deadId);
     }
     MUTEX_Unlock(server->mtx);

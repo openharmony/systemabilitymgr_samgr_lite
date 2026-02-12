@@ -113,17 +113,23 @@ static void *Receive(void *argv)
     while (retry < MAX_RETRY_TIMES) {
         ret = registerEpArg->endpoint->registerEP(&registerEpArg->endpoint->identity,
             registerEpArg->token, registerEpArg->service, registerEpArg->feature);
-        if (ret == EC_SUCCESS) {
-            const SvcIdentity *samgr = GetContextObject();
-            if (samgr != NULL) {
-                (void)RemoveDeathRecipient(*samgr, registerEpArg->endpoint->deadId);
-                (void)AddDeathRecipient(*samgr, OnSamgrServerExit, registerEpArg->endpoint,
-                    &registerEpArg->endpoint->deadId);
-                break;
-            }
+        if (ret != EC_SUCCESS) {
+            ++retry;
+            usleep(RETRY_INTERVAL);
+            continue;
         }
-        ++retry;
-        usleep(RETRY_INTERVAL);
+        const SvcIdentity *samgr = GetContextObject();
+        if (samgr == NULL) {
+            ++retry;
+            usleep(RETRY_INTERVAL);
+            continue;
+        }
+        if (registerEpArg->endpoint->deadId != INVALID_INDEX) {
+            (void)RemoveDeathRecipient(*samgr, registerEpArg->endpoint->deadId);
+        }
+        (void)AddDeathRecipient(*samgr, OnSamgrServerExit, registerEpArg->endpoint,
+            &registerEpArg->endpoint->deadId);
+        break;
     }
     if (ret != EC_SUCCESS) {
         HILOG_FATAL(HILOG_MODULE_SAMGR, "Register endpoint<%s>, handle<%u> failed! will exit to recover!",
