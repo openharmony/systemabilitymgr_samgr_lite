@@ -248,6 +248,7 @@ typedef struct SamgrLite {
      */
     IUnknown *(*GetFeatureApi)(const char *serviceName, const char *feature);
 
+#ifndef DISABLE_SAMGR_LITE_SYSTEM_CAPABILITY
     /**
      * @brief Adds system capability.
      *
@@ -285,6 +286,7 @@ typedef struct SamgrLite {
      * @version 1.0
      */
     int32 (*GetSystemAvailableCapabilities)(char sysCaps[MAX_SYSCAP_NUM][MAX_SYSCAP_NAME_LEN], int32 *sysCapNum);
+#endif
 } SamgrLite;
 
 /**
