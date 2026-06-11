@@ -17,8 +17,13 @@ import("config.gni")
 lite_component("samgr") {
   features = [
     "samgr",
-    "communication/broadcast",
   ]
+
+  if (enable_ohos_systemabilitymgr_samgr_lite_broadcast) {
+    features += [
+      "communication/broadcast",
+    ]
+  }
 
   if (ohos_kernel_type == "liteos_a" || ohos_kernel_type == "linux") {
     features += [
@@ -35,9 +40,11 @@ lite_component("samgr") {
   }
 }
 
-copy("ConfigFiles") {
-  sources = [ "config/system_capability.json" ]
-  outputs = [ "$target_out_dir/config/system_capability.json" ]
+if (enable_ohos_systemabilitymgr_samgr_lite_system_capability) {
+  copy("ConfigFiles") {
+    sources = [ "config/system_capability.json" ]
+    outputs = [ "$target_out_dir/config/system_capability.json" ]
+  }
 }
 
 ndk_lib("samgr_lite_ndk") {
@@ -47,13 +54,20 @@ ndk_lib("samgr_lite_ndk") {
     lib_extension = ".so"
   }
   deps = [
-    "communication/broadcast",
     "samgr",
   ]
   head_files = [
     "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
-    "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/communication/broadcast",
   ]
+  if (enable_ohos_systemabilitymgr_samgr_lite_broadcast) {
+    deps += [
+      "communication/broadcast",
+    ]
+    
+    head_files += [
+      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/communication/broadcast",
+    ]
+  }
   if (ohos_kernel_type == "liteos_a" || ohos_kernel_type == "linux") {
     deps += [ "samgr_server:server" ]
     head_files +=
