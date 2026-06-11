@@ -32,6 +32,7 @@ IUnknown *__attribute__((weak)) SAMGR_FindServiceApi(const char *service, const 
     return NULL;
 }
 
+#ifndef DISABLE_SAMGR_LITE_SYSTEM_CAPABILITY
 int32 __attribute__((weak)) SAMGR_RegisterSystemCapabilityApi(const char *sysCap, BOOL isReg)
 {
     (void)sysCap;
@@ -52,3 +53,4 @@ int32 __attribute__((weak)) SAMGR_GetSystemCapabilitiesApi(char sysCaps[MAX_SYSC
     (void)size;
     return EC_FAILURE;
 }
+#endif
