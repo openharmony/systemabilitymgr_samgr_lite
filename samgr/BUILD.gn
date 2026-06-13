@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import("../config.gni")
+import("//base/startup/bootstrap_lite/config.gni")
 
 defines = []
 
@@ -45,6 +46,12 @@ if (ohos_kernel_type == "liteos_m" || ohos_kernel_type == "uniproton") {
 
     include_dirs =
         [ "//base/hiviewdfx/hilog_lite/interfaces/native/kits/hilog_lite" ]
+
+    if (!bootstrap_lite_enable_bootstrap_service) {
+      defines += [ "BOOTSTRAP_NO_SERVICE" ]
+      include_dirs +=
+          [ "//base/startup/bootstrap_lite/services/source" ]
+    }
 
     public_deps = [
       "//foundation/systemabilitymgr/samgr_lite/samgr/adapter:samgr_adapter",
