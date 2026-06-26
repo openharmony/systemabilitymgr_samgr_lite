@@ -20,6 +20,14 @@ if (defined(config_ohos_systemabilitymgr_samgr_lite_shared_task_size) &&
   defines += [ "SHARED_TASK_STACK_SIZE=$config_ohos_systemabilitymgr_samgr_lite_shared_task_size" ]
 }
 
+if (!enable_ohos_systemabilitymgr_samgr_lite_specified_task) {
+  defines += [ "DISABLE_SAMGR_LITE_SPECIFIED_TASK" ]
+}
+
+if (!enable_ohos_systemabilitymgr_samgr_lite_no_task) {
+  defines += [ "DISABLE_SAMGR_LITE_NO_TASK" ]
+}
+
 config("external_settings_shared") {
   defines += [ "LAYER_INIT_SHARED_LIB" ]
 }
@@ -40,6 +48,10 @@ if (ohos_kernel_type == "liteos_m" || ohos_kernel_type == "uniproton") {
       "registry/service_registry.c",
       "source/samgr_lite.c",
     ]
+
+    if (!enable_ohos_systemabilitymgr_samgr_lite_system_capability) {
+      defines += [ "DISABLE_SAMGR_LITE_SYSTEM_CAPABILITY" ]
+    }
 
     public_configs = [ ":samgr_public" ]
 
@@ -65,6 +77,10 @@ if (ohos_kernel_type == "liteos_m" || ohos_kernel_type == "uniproton") {
 if (ohos_kernel_type == "liteos_a" || ohos_kernel_type == "linux") {
   shared_library("samgr") {
     sources = [ "source/samgr_lite.c" ]
+
+    if (!enable_ohos_systemabilitymgr_samgr_lite_system_capability) {
+      defines += [ "DISABLE_SAMGR_LITE_SYSTEM_CAPABILITY" ]
+    }
 
     cflags = [
       "-fPIC",

@@ -42,9 +42,11 @@ static BOOL RegisterDefaultFeatureApi(const char *serviceName, IUnknown *publicA
 static IUnknown *UnregisterDefaultFeatureApi(const char *serviceName);
 static IUnknown *GetDefaultFeatureApi(const char *serviceName);
 static IUnknown *GetFeatureApi(const char *serviceName, const char *feature);
+#ifndef DISABLE_SAMGR_LITE_SYSTEM_CAPABILITY
 static int32 AddSystemCapability(const char *sysCap);
 static BOOL HasSystemCapability(const char *sysCap);
 static int32 GetSystemAvailableCapabilities(char sysCaps[MAX_SYSCAP_NUM][MAX_SYSCAP_NAME_LEN], int32 *sysCapNum);
+#endif
 #ifdef MINI_SAMGR_LITE_RPC
 static IUnknown *GetRemoteDefaultFeatureApi(char *deviceId, const char *serviceName);
 #endif
@@ -99,9 +101,11 @@ static void Init(void)
 #ifdef MINI_SAMGR_LITE_RPC
     g_samgrImpl.vtbl.GetRemoteDefaultFeatureApi = GetRemoteDefaultFeatureApi;
 #endif
+#ifndef DISABLE_SAMGR_LITE_SYSTEM_CAPABILITY
     g_samgrImpl.vtbl.AddSystemCapability = AddSystemCapability;
     g_samgrImpl.vtbl.HasSystemCapability = HasSystemCapability;
     g_samgrImpl.vtbl.GetSystemAvailableCapabilities = GetSystemAvailableCapabilities;
+#endif
     g_samgrImpl.status = BOOT_SYS;
     g_samgrImpl.services = VECTOR_Make((VECTOR_Key)GetServiceName, (VECTOR_Compare)strcmp);
     g_samgrImpl.mutex = MUTEX_InitValue();
@@ -363,6 +367,7 @@ static IUnknown *GetDefaultFeatureApi(const char *serviceName)
     return GetFeatureApi(serviceName, NULL);
 }
 
+#ifndef DISABLE_SAMGR_LITE_SYSTEM_CAPABILITY
 static int32 AddSystemCapability(const char *sysCap)
 {
     if (sysCap == NULL || strlen(sysCap) == 0 || strlen(sysCap) > MAX_SYSCAP_NAME_LEN) {
@@ -386,6 +391,7 @@ static int32 GetSystemAvailableCapabilities(char sysCaps[MAX_SYSCAP_NUM][MAX_SYS
     }
     return SAMGR_GetSystemCapabilitiesApi(sysCaps, sysCapNum);
 }
+#endif
 
 static IUnknown *GetFeatureApi(const char *serviceName, const char *feature)
 {
@@ -459,12 +465,14 @@ static void AddTaskPool(ServiceImpl *service, TaskConfig *cfg, const char *name)
         }
             break;
 
+#ifndef DISABLE_SAMGR_LITE_SPECIFIED_TASK
         case SPECIFIED_TASK:
             service->taskPool = GetSpecifiedTaskPool(cfg);
             if (service->taskPool != NULL) {
                 break;
             }
             // fallthrough
+#endif
         case SINGLE_TASK:
             service->taskPool = SAMGR_CreateFixedTaskPool(cfg, name, SINGLE_SIZE);
             break;
