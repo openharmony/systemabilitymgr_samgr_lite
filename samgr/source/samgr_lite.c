@@ -23,6 +23,10 @@
 #include "service_impl.h"
 #include "feature_impl.h"
 #include "service_registry.h"
+#ifdef BOOTSTRAP_NO_SERVICE
+#include "ohos_init.h"
+#include "bootstrap_service.h"
+#endif
 
 #undef LOG_TAG
 #undef LOG_DOMAIN
@@ -55,11 +59,14 @@ static IUnknown *GetRemoteDefaultFeatureApi(char *deviceId, const char *serviceN
  * ************************************************************************************************* */
 static void InitializeAllServices(Vector *services);
 static void InitializeSingleService(ServiceImpl *service);
-static int32 SendBootRequest(int msgId, uint32 msgValue);
 static const char *GetServiceName(const ServiceImpl *serviceImpl);
 static short GetUninitializedPos(void);
 static void AddTaskPool(ServiceImpl *service, TaskConfig *cfg, const char *name);
 static int32 InitCompleted(void);
+#ifdef BOOTSTRAP_NO_SERVICE
+#else
+static int32 SendBootRequest(int msgId, uint32 msgValue);
+#endif
 static void HandleInitRequest(const Request *request, const Response *response);
 static SamgrLiteImpl *GetImplement(void);
 static ServiceImpl *GetService(const char *name);
@@ -71,6 +78,26 @@ static void Init(void);
 static SamgrLiteImpl g_samgrImpl;
 
 #define TO_NEXT_STATUS(status) (BootStatus)((uint8)(status) | 0x1)
+
+#ifdef BOOTSTRAP_NO_SERVICE
+/*
+ * When Bootstrap service is removed (BOOTSTRAP_NO_SERVICE), APP layer
+ * .zinitcall sections must be traversed synchronously in InitCompleted().
+ * APP_CALL() macro from bootstrap_service.h encapsulates the extern
+ * declarations for linker section boundary symbols (__zinitcall_app_*),
+ * which is the standard GCC/clang pattern for referencing custom linker
+ * sections (IAR uses __section_begin/__section_end built-ins instead).
+ */
+static void InitAppServices(void)
+{
+    APP_CALL(service, 0);
+}
+
+static void InitAppFeatures(void)
+{
+    APP_CALL(feature, 0);
+}
+#endif
 
 SamgrLite *SAMGR_GetInstance(void)
 {
@@ -174,7 +201,14 @@ static int32 InitCompleted(void)
         MUTEX_Unlock(manager->mutex);
         HILOG_INFO(HILOG_MODULE_SAMGR, "Initialized all core system services!");
         WDT_Reset(WDG_SVC_REG_TIME);
+#ifdef BOOTSTRAP_NO_SERVICE
+        InitAppServices();
+        InitAppFeatures();
+        SAMGR_Bootstrap();
+#else
         return SendBootRequest(BOOT_SYS_COMPLETED, pos);
+#endif
+        return EC_SUCCESS;
     }
 
     if (manager->status == BOOT_APP_WAIT) {
@@ -182,7 +216,12 @@ static int32 InitCompleted(void)
         MUTEX_Unlock(manager->mutex);
         HILOG_INFO(HILOG_MODULE_SAMGR, "Initialized all system and application services!");
         WDT_Reset(WDG_SVC_TEST_TIME);
+#ifdef BOOTSTRAP_NO_SERVICE
+        SAMGR_Bootstrap();
+#else
         return SendBootRequest(BOOT_APP_COMPLETED, pos);
+#endif
+        return EC_SUCCESS;
     }
     MUTEX_Unlock(manager->mutex);
     WDT_Stop();
@@ -504,12 +543,14 @@ static ServiceImpl *GetService(const char *name)
     return serviceImpl;
 }
 
+#ifndef BOOTSTRAP_NO_SERVICE
 static int32 SendBootRequest(int msgId, uint32 msgValue)
 {
     Identity id = DEFAULT_GetFeatureId(GetService(BOOTSTRAP_SERVICE), NULL);
     Request request = {msgId, 0, NULL, msgValue};
     return SAMGR_SendRequest(&id, &request, (Handler)SAMGR_Bootstrap);
 }
+#endif
 
 static void HandleInitRequest(const Request *request, const Response *response)
 {
