@@ -193,9 +193,7 @@ static ServiceImpl *CorrectServiceImpl(Exchange *exchange, ServiceImpl *serviceI
         // The ack message use the last service.
         return serviceImpl;
     }
-
     serviceImpl = SAMGR_GetServiceByID(exchange->id.serviceId);
-
     if (serviceImpl == NULL) {
         return NULL;
     }
