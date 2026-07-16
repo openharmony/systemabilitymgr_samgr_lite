@@ -18,4 +18,16 @@ declare_args() {
 
   # enable samgr_lite adapt to rpc on mini system.
   enable_ohos_systemabilitymgr_samgr_lite_rpc_mini = false
+
+  # enable samgr_lite broadcast
+  enable_ohos_systemabilitymgr_samgr_lite_broadcast = true
+
+  # enable samgr_lite system capability
+  enable_ohos_systemabilitymgr_samgr_lite_system_capability = true
+
+  # enable samgr_lite specified task
+  enable_ohos_systemabilitymgr_samgr_lite_specified_task = true
+
+  # enable samgr_lite no task
+  enable_ohos_systemabilitymgr_samgr_lite_no_task = true
 }

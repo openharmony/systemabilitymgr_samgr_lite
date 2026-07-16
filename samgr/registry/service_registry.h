@@ -27,9 +27,11 @@ extern "C" {
 #define MAX_SYSCAP_NAME_LEN 64
 int SAMGR_RegisterServiceApi(const char *service, const char *feature, const Identity *identity, IUnknown *iUnknown);
 IUnknown *SAMGR_FindServiceApi(const char *service, const char *feature);
+#ifndef DISABLE_SAMGR_LITE_SYSTEM_CAPABILITY
 int32 SAMGR_RegisterSystemCapabilityApi(const char *sysCap, BOOL isReg);
 BOOL SAMGR_QuerySystemCapabilityApi(const char *sysCap);
 int32 SAMGR_GetSystemCapabilitiesApi(char sysCaps[MAX_SYSCAP_NUM][MAX_SYSCAP_NAME_LEN], int32 *size);
+#endif
 #ifdef __cplusplus
 #if __cplusplus
 }
