@@ -68,10 +68,14 @@ typedef enum TaskType {
     SHARED_TASK = 0,
     /** Task exclusively occupied by a service */
     SINGLE_TASK = 1,
+#ifndef DISABLE_SAMGR_LITE_SPECIFIED_TASK
     /** A specified task shared by multiple services */
     SPECIFIED_TASK = 2,
+#endif
+#ifndef DISABLE_SAMGR_LITE_NO_TASK
     /** No task for the service. Generally, this situation does not occur. */
     NO_TASK = 0xFF,
+#endif
 } TaskType;
 
 /**
