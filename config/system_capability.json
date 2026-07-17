@@ -45,11 +45,11 @@
             "register-on-startup":true
         },
         {
-            "name":"SystemCapability.HiviewDFX.HilogLite",
+            "name":"SystemCapability.HiviewDFX.HiLogLite",
             "register-on-startup":true
         },
         {
-            "name":"SystemCapability.HiviewDFX.HieventLite",
+            "name":"SystemCapability.HiviewDFX.HiEventLite",
             "register-on-startup":true
         },
         {
